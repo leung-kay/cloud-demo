@@ -1,0 +1,33 @@
+server:
+  port: 9010
+
+logging:
+  level:
+    root: info
+    com.ruifucredit.cloud.commodity: debug
+  file: ./logs/${eureka.instance.appname}.log
+
+spring:
+  application:
+    name: ${eureka.instance.appname}
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@12.3.10.15:1521/crdb
+    username: ryxpay
+    password: ENC(3ntasycDRckjf81NQ9VFTQ==)
+  jpa:
+    show-sql: true
+    # 启动项目时会重建表结构
+    hibernate:
+      ddl-auto: create
+
+eureka:
+  instance:
+    appname: commodity
+  client:
+    service-url:
+      defaultZone: http://localhost:8080/eureka/
+
+jasypt:
+  encryptor:
+    password: helloworld

@@ -1,0 +1,20 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    root: info
+    com.ruifucredit.cloud.center: debug
+  file: ./logs/${eureka.instance.appname}.log
+
+eureka:
+  instance:
+    appname: center
+    hostname: localhost
+  # 停止向其他注册中心注册 生产环境下应注释以下三行 并设置eureka.client.service-url.defaultZone为另一个注册中心地址
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+  # 关闭自我保护 生产环境下应注释掉以下两行
+  server:
+    enable-self-preservation: false
