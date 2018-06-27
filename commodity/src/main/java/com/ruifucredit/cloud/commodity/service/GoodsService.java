@@ -1,10 +1,10 @@
 package com.ruifucredit.cloud.commodity.service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import com.ruifucredit.cloud.commodity.pojo.dto.Goods;
+import com.ruifucredit.cloud.commodity.pojo.po.Goods;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,49 +17,42 @@ public class GoodsService implements IGoodsService {
 	private GoodsRepository goodsRepo;
 
 	@Override
-	public Goods query(Long id) {
-		com.ruifucredit.cloud.commodity.pojo.po.Goods goods = goodsRepo.findOne(id);
+	public com.ruifucredit.cloud.commodity.pojo.dto.Goods query(Long id) {
+		Goods goods = goodsRepo.findOne(id);
 
 		if (goods != null) {
 			goods.getSubGoodses();
+            return goods.build();
 		}
 
-		return goods.build();
+		return new com.ruifucredit.cloud.commodity.pojo.dto.Goods();
 	}
 
 	@Override
-	public List<Goods> query(String name) {
+	public List<com.ruifucredit.cloud.commodity.pojo.dto.Goods> query(String name) {
 		
-		List<com.ruifucredit.cloud.commodity.pojo.po.Goods> goodses = goodsRepo.findByGoodsName(name);
-		
-		List<Goods> result = new ArrayList<>(goodses.size());
-		
-		for(com.ruifucredit.cloud.commodity.pojo.po.Goods goods : goodses) {
-			result.add(goods.build());
-		}
-		
-		return result;
+		List<Goods> goodses = goodsRepo.findByGoodsName(name);
+
+        return goodses.stream().map(goods -> goods.build()).collect(Collectors.toList());
 
 	}
 
 	@Override
-	public Goods create(Goods param) {
+	public com.ruifucredit.cloud.commodity.pojo.dto.Goods create(com.ruifucredit.cloud.commodity.pojo.dto.Goods param) {
 
 		Date now = new Date();
 
-		com.ruifucredit.cloud.commodity.pojo.po.Goods goods = new com.ruifucredit.cloud.commodity.pojo.po.Goods(param);
+		Goods goods = new Goods(param);
 
 		// 新增 防止更新goods
 		goods.setGoodsId(null).setCreateTime(now).setUpdateTime(now);
 
 		// 新增 防止更新sub_goods
 		if (goods.getSubGoodses() != null) {
-			for (com.ruifucredit.cloud.commodity.pojo.po.SubGoods subGoods : goods.getSubGoodses()) {
-				subGoods.setSubGoodsId(null).setCreateTime(now).setUpdateTime(now);
-			}
+		    goods.getSubGoodses().forEach(subGoods -> subGoods.setSubGoodsId(null).setCreateTime(now).setUpdateTime(now));
 		}
 
-		com.ruifucredit.cloud.commodity.pojo.po.Goods result = goodsRepo.save(goods);
+		Goods result = goodsRepo.save(goods);
 
 		return result.build();
 	}
