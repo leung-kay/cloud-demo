@@ -1,8 +1,8 @@
 package com.ruifucredit.cloud.inventory.controller;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +59,7 @@ public class StockController {
         List<Stock> result = stockService.queryByGoodsId(id);
 
         // 随机休眠0-9s 方便引发前置服务的断路器
-        Thread.sleep(new Random(new Date().getTime()).nextInt(10) * 1000);
+        TimeUnit.SECONDS.sleep(new Random(System.currentTimeMillis()).nextInt(10));
 
         logger.info("StockController.queryCommodityStock.result: {}", result);
 
