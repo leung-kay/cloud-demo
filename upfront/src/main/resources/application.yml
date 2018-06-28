@@ -1,0 +1,39 @@
+server:
+  port: 9000
+
+logging:
+  level:
+    root: info
+    com.ruifucredit.cloud.upfront: debug
+
+  file: ./logs/${eureka.instance.appname}.log
+
+spring:
+  application:
+    name: ${eureka.instance.appname}
+    
+eureka:
+  instance:
+    appname: upfront
+    
+  client:
+    service-url:
+      defaultZone: http://localhost:8080/eureka/
+
+#配置负载均衡超时时间和失败是否重试
+ribbon:
+  #负载均衡超时120s 要覆盖断路器的超时时间
+  ConnectTimeout: 120000
+  ReadTimeout: 120000
+  #失败不重试
+  MaxAutoRetriesNextServer: 0
+  MaxAutoRetries: 0
+
+#方法调用超过6s 触发断路器
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 6000

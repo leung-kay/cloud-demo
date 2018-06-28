@@ -24,7 +24,7 @@ import lombok.SneakyThrows;
 @RestController
 public class StockController {
 
-    private Logger logger = LoggerFactory.getLogger(StockController.class);
+    private final Logger logger = LoggerFactory.getLogger(StockController.class);
 
     @Autowired
     private IStockService stockService;
@@ -58,9 +58,10 @@ public class StockController {
 
         List<Stock> result = stockService.queryByGoodsId(id);
 
-        logger.info("StockController.queryCommodityStock.result: {}", result);
+        // 随机休眠0-9s 方便引发前置服务的断路器
+        Thread.sleep(new Random(new Date().getTime()).nextInt(10) * 1000);
 
-        Thread.sleep(new Random(new Date().getTime()).nextInt(5) * 1000);
+        logger.info("StockController.queryCommodityStock.result: {}", result);
 
         return new Outcoming<>(result);
 

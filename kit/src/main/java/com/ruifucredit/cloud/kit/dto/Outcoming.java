@@ -28,5 +28,9 @@ public class Outcoming<T> {
 	public Outcoming() {
 		this(OK_CODE, null, null);
 	}
+
+	public boolean isSuccess() {
+		return new Integer(OK_CODE).equals(code);
+	}
 	
 }
