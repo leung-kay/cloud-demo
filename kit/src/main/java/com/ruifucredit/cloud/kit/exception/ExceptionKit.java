@@ -34,7 +34,7 @@ public class ExceptionKit {
 
         if(code!=null) {
             int messageCode = code;
-            Optional<StatusCode> optionalCode = Arrays.stream(STATUS_CODES).filter(statusCode -> statusCode.code!=messageCode).findFirst();
+            Optional<StatusCode> optionalCode = Arrays.stream(STATUS_CODES).filter(statusCode -> statusCode.code==messageCode).findFirst();
             if(optionalCode.isPresent()) {
                 return new Outgoing<>(optionalCode.get());
             } else {

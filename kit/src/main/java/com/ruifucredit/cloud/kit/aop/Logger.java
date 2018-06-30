@@ -13,7 +13,7 @@ import java.time.Instant;
 
 @Component
 @Aspect
-@Order(1000)
+@Order(1001)
 @Slf4j
 public class Logger {
 

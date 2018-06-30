@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Aspect
-@Order(1001)
+@Order(1000)
 @Slf4j
 public class Catcher {
 
