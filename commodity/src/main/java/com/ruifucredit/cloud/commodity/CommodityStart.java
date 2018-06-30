@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@ComponentScan(basePackages = "com.ruifucredit.cloud")
+@ComponentScan("com.ruifucredit.cloud")
 public class CommodityStart {
 
     public static void main(String[] args) throws Exception {

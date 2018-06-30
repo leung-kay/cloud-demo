@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import com.ruifucredit.cloud.kit.aop.Catch;
+import com.ruifucredit.cloud.kit.aop.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +20,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ruifucredit.cloud.inventory.service.IStockService;
 import com.ruifucredit.cloud.inventory.pojo.dto.Stock;
-import com.ruifucredit.cloud.kit.dto.Outcoming;
+import com.ruifucredit.cloud.kit.dto.Outgoing;
 
 import lombok.SneakyThrows;
 
 @RestController
+@Slf4j
+@Log
+@Catch
 public class StockController {
-
-    private final Logger logger = LoggerFactory.getLogger(StockController.class);
 
     @Autowired
     private IStockService stockService;
@@ -36,11 +40,11 @@ public class StockController {
      * @return
      */
     @GetMapping("stock/{id}")
-    public Outcoming<Stock> queryStock(@PathVariable(name = "id") Long id) {
+    public Outgoing<Stock> queryStock(@PathVariable(name = "id") Long id) {
 
         Stock result = stockService.queryOne(id);
 
-        return new Outcoming<>(result);
+        return new Outgoing<>(result);
 
     }
 
@@ -52,18 +56,18 @@ public class StockController {
      */
     @GetMapping("stock/commodity/{id}")
     @SneakyThrows
-    public Outcoming<List<Stock>> queryCommodityStock(@PathVariable(name = "id") Long id) {
-
-        logger.info("StockController.queryCommodityStock.id: {}", id);
+    public Outgoing<List<Stock>> queryCommodityStock(@PathVariable(name = "id") Long id) {
 
         List<Stock> result = stockService.queryByGoodsId(id);
 
         // 随机休眠0-9s 方便引发前置服务的断路器
-        TimeUnit.SECONDS.sleep(new Random(System.currentTimeMillis()).nextInt(10));
+        int sleepSeconds = new Random(System.currentTimeMillis()).nextInt(10);
 
-        logger.info("StockController.queryCommodityStock.result: {}", result);
+        log.info("StockController.queryCommodityStock.sleepSeconds: {}", sleepSeconds);
 
-        return new Outcoming<>(result);
+        TimeUnit.SECONDS.sleep(sleepSeconds);
+
+        return new Outgoing<>(result);
 
     }
 
@@ -75,11 +79,11 @@ public class StockController {
      * @return
      */
     @GetMapping("stock/commodity/{id}/{subId}")
-    public Outcoming<Stock> queryCommodityStock(@PathVariable(name = "id") Long id, @PathVariable(name = "subId") Long subId) {
+    public Outgoing<Stock> queryCommodityStock(@PathVariable(name = "id") Long id, @PathVariable(name = "subId") Long subId) {
 
         Stock result = stockService.queryBySubGoodsId(id, subId);
 
-        return new Outcoming<>(result);
+        return new Outgoing<>(result);
 
     }
 
@@ -92,11 +96,11 @@ public class StockController {
      * @return
      */
     @PutMapping("stock/{stockId}")
-    public Outcoming<Stock> modifyStock(@PathVariable(name = "stockId") Long id, @RequestBody Stock stock) {
+    public Outgoing<Stock> modifyStock(@PathVariable(name = "stockId") Long id, @RequestBody Stock stock) {
 
         Stock result = stockService.modify(stock, id);
 
-        return new Outcoming<>(result);
+        return new Outgoing<>(result);
 
     }
 
@@ -108,11 +112,11 @@ public class StockController {
      * @return
      */
     @PostMapping("stock")
-    public Outcoming<List<Stock>> createStock(@RequestBody List<Stock> stock) {
+    public Outgoing<List<Stock>> createStock(@RequestBody List<Stock> stock) {
 
         List<Stock> result = stockService.create(stock);
 
-        return new Outcoming<>(result);
+        return new Outgoing<>(result);
     }
 
     /**
@@ -121,11 +125,11 @@ public class StockController {
      * @return
      */
     @DeleteMapping("stock/{stockId}")
-    public Outcoming<Stock> removeStock(@PathVariable(name = "stockId") Long id) {
+    public Outgoing<Stock> removeStock(@PathVariable(name = "stockId") Long id) {
 
         Stock result = stockService.remove(id);
 
-        return new Outcoming<>(result);
+        return new Outgoing<>(result);
 
     }
 
