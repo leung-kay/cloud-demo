@@ -23,13 +23,13 @@ public class Catcher {
             return (Outgoing<?>) joinPoint.proceed();
         } catch (Throwable t) {
 
-            String info = String.format("Catching Exception: %s", t.toString());
+            String info = String.format("[CatchingException] %s", t.toString());
 
             log.info(info);
 
             Outgoing<?> outgoing = ExceptionKit.badGoing(t);
 
-            info += String.format(", Outgoing: %s", GsonKit.toJson(outgoing));
+            info += String.format(" [Outgoing] %s", GsonKit.toJson(outgoing));
 
             log.info(info);
 

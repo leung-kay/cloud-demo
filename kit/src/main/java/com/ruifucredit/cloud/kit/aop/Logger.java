@@ -22,7 +22,7 @@ public class Logger {
 
         Instant t1 = Instant.now();
 
-        String info = String.format("Method Signature: %s, Invoke Arguments: %s, Start Time: %s", joinPoint.getSignature().toLongString(), GsonKit.toJson(joinPoint.getArgs()), t1);
+        String info = String.format("[MethodSignature] %s [InvokeArguments] %s [StartTime] %s", joinPoint.getSignature().toLongString(), GsonKit.toJson(joinPoint.getArgs()), t1);
 
         log.info(info);
 
@@ -31,12 +31,12 @@ public class Logger {
         try {
             return (result = joinPoint.proceed());
         } catch (Throwable e) {
-            info += String.format(", Method Exception: %s", e.toString());
+            info += String.format(" [MethodException] %s", e.toString());
             log.error(info, e);
             throw e;
         } finally {
             Instant t2 = Instant.now();
-            info += String.format(", Invoke Result: %s, Finish Time: %s, Duration Millis: %d", GsonKit.toJson(result), t2, Duration.between(t1, t2).toMillis());
+            info += String.format(" [InvokeResult] %s [FinishTime] %s [DurationMillis] %d", GsonKit.toJson(result), t2, Duration.between(t1, t2).toMillis());
             log.info(info);
         }
 
